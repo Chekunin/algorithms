@@ -314,4 +314,10 @@ func (h *heap) getMax() int {
 
 Таким образом, двоичная куча имеет структуру дерева логарифмической высоты (относительно количества вершин), позволяет за логарифмическое же время добавлять элементы и извлекать элемент с максимальным приоритетом за константное время. В то же время двоичная куча проста в реализации и не требует дополнительной памяти.
 
+По Binary heap делал конспект по этой [статье](https://habr.com/ru/post/112222/)  
+Также есть реализация IntHeap и PriorityQueue в Golang [здесь](https://golang.org/pkg/container/heap/)  
+Разобраться с реализацией [heap sort](https://www.google.com/search?q=heap+sort+golan&oq=heap+sort+golan&aqs=chrome..69i57j0.2173j0j7&sourceid=chrome&ie=UTF-8)
+
+
+
 ## AVL tree
