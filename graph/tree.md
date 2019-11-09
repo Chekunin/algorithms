@@ -15,6 +15,21 @@ type TreeNode struct {
 	Right *TreeNode
 }
 ```
+Его можно представить в виде массива, где нулевой элемент - корень дерева, а левый и правый дочерние элементы i-ого узла под индексами i\*2+1 и i\*2+2 соотвественно.
+```golang
+func arrToTreeNode(arr []int, i int) *TreeNode {
+	node := &TreeNode{
+		Val: arr[i],
+	}
+	if i*2+1 < len(arr) {
+		node.Left = arrToTreeNode(arr, i*2+1)
+	}
+	if i*2+2 < len(arr) {
+		node.Right = arrToTreeNode(arr,i*2+2)
+	}
+	return node
+}
+```
 ### Вставка элемента  
 Если мы хотим вставить левый элемент к какому-то узлу, то мы проверяем есть ли у него уже левый элемент.  
 Если нет, просто добавляет новый элемент в Left.  
