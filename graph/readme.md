@@ -52,4 +52,65 @@ __Матрица смежности__ - это двумерный (2D) масс�
 * Добавить элементы (вершины, ребра) в граф.
 * Нахождение пути от одной вершины к другой.  
 
-Конспект сделал по [этой статья](https://evileg.com/ru/post/492/)
+Конспект сделал по [этой статье](https://evileg.com/ru/post/492/)  
+Много примеров реализация различных структур данных на go есть [здесь (github)](https://github.com/maximelamure/algorithms/tree/d7cfe2f2953cf79c2dfc03152a92ac9e4635d45c/datastructure)
+
+## DFS
+Реализация графа и dfs:  
+```golang
+type Vertex struct {
+	visited bool
+	value string
+	neighbours []*Vertex
+}
+
+func NewVertex(value string) *Vertex {
+	return &Vertex{
+		value:      value,
+	}
+}
+
+func (v *Vertex) connect(vertex ...*Vertex) {
+	v.neighbours = append(v.neighbours, vertex...)
+}
+
+type Graph struct{}
+
+func (g *Graph) dfs(vertex *Vertex) {
+	if vertex.visited {
+		return
+	}
+	vertex.visited = true
+	fmt.Println(vertex.value)
+	for _, v := range vertex.neighbours {
+		g.dfs(v)
+	}
+}
+
+func (g *Graph) disconnected(vertex ...*Vertex) {
+	for _, v := range vertex {
+		g.dfs(v)
+	}
+}
+
+func main() {
+	v1 := NewVertex("A")
+	v2 := NewVertex("B")
+	v3 := NewVertex("C")
+	v4 := NewVertex("D")
+	v5 := NewVertex("E")
+	g := Graph{}
+	v1.connect(v2)
+	v2.connect(v4, v5)
+	v3.connect(v4, v5)
+	g.dfs(v1)
+}
+```
+Сам код взял [отсюда](https://codereview.stackexchange.com/questions/186035/dfs-implementation)  
+Про DFS можно почитать на [хабре](https://habr.com/ru/post/200074/)  
+Про BFS можно что-то почитать [здесь](https://evileg.com/ru/post/512/)  
+
+## Топологическая сортировка
+Норм описано [здесь](https://habr.com/ru/post/100953/)  
+
+[Использование обхода в глубину для поиска цикла](https://neerc.ifmo.ru/wiki/index.php?title=%D0%98%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_%D0%BE%D0%B1%D1%85%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%B3%D0%BB%D1%83%D0%B1%D0%B8%D0%BD%D1%83_%D0%B4%D0%BB%D1%8F_%D0%BF%D0%BE%D0%B8%D1%81%D0%BA%D0%B0_%D1%86%D0%B8%D0%BA%D0%BB%D0%B0)
