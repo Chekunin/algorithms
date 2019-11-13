@@ -145,6 +145,67 @@ func main() {
 
 
 ## Топологическая сортировка
+Идея в том, что мы берем произвольную вершину (например, самую первую) и идем по ее графу вглубь (по dfs). Как только дошли до конца, добавляем ее в очередь (в нашем случае, чтобы обойтись без очереди и потом не доставать все элементы по-отдельности и не класть в массив с результатом, мы заполняем массив с результатом с конца).  
+Затем кладем предыдущий элемент по стеку dfs и т.д.  
+Как только дошли до узла, с которого начинали, выбираем проивольным образом следующий узел, который еще не посещали. Так до тех пор, пока не посетим все узлы.  
+При момощи данной сортировки, можно, например, удобно обходить иерархию с зависимостями, где сначала будут элементы которые не имеют зависимостей, а после которые имеют зависимости с предыдущими.  
+```golang
+type Edge struct {
+	from int
+	to int
+	weight int
+}
+
+func NewEdge(from, to, weight int) Edge {
+	return Edge{
+		from:   from,
+		to:     to,
+		weight: weight,
+	}
+}
+
+func topologicalSort(graph map[int][]Edge, numNodes int) []int {
+	ordering := make([]int, numNodes)
+	visited := make([]bool, numNodes)
+	i := numNodes - 1
+	for at := 0; at < numNodes; at++ {
+		if !visited[at] {
+			i = dfs(i, at, visited, ordering, graph)
+		}
+	}
+	return ordering
+}
+
+func dfs(i int, at int, visited []bool, ordering []int, graph map[int][]Edge) int {
+	visited[at] = true
+	edges := graph[at]
+	for _, v := range edges {
+		if !visited[v.to] {
+			i = dfs(i, v.to, visited, ordering, graph)
+		}
+	}
+	ordering[i] = at
+	return i-1
+}
+
+func main() {
+	graph := make(map[int][]Edge)
+	numNodes := 7
+	graph[0] = append(graph[0], NewEdge(0,1,3))
+	graph[0] = append(graph[0], NewEdge(0,2,2))
+	graph[0] = append(graph[0], NewEdge(0,5,3))
+	graph[1] = append(graph[1], NewEdge(1,3,1))
+	graph[1] = append(graph[1], NewEdge(1,2,6))
+	graph[2] = append(graph[2], NewEdge(2,3,1))
+	graph[2] = append(graph[2], NewEdge(2,4,10))
+	graph[3] = append(graph[3], NewEdge(3,4,5))
+	graph[3] = append(graph[3], NewEdge(3,4,7))
+
+	ordering := topologicalSort(graph, numNodes)
+	fmt.Println(ordering) // [6 0 5 1 2 3 4]
+}
+```
+Делал по [этому уроку](https://www.youtube.com/watch?v=eL-KzMXSXXI) (там в описании есть ссылка на github, где есть реализацтт множества алгоритмов)  
 Норм описано [здесь](https://habr.com/ru/post/100953/)  
 
 [Использование обхода в глубину для поиска цикла](https://neerc.ifmo.ru/wiki/index.php?title=%D0%98%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_%D0%BE%D0%B1%D1%85%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%B3%D0%BB%D1%83%D0%B1%D0%B8%D0%BD%D1%83_%D0%B4%D0%BB%D1%8F_%D0%BF%D0%BE%D0%B8%D1%81%D0%BA%D0%B0_%D1%86%D0%B8%D0%BA%D0%BB%D0%B0)
