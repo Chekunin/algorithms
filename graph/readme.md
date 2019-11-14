@@ -208,4 +208,35 @@ func main() {
 Делал по [этому уроку](https://www.youtube.com/watch?v=eL-KzMXSXXI) (там в описании есть ссылка на github, где есть реализацтт множества алгоритмов)  
 Норм описано [здесь](https://habr.com/ru/post/100953/)  
 
+## Поиск цикла в графе (при помощи dfs)
+Поиск присоходит при помощи DFS, где мы помечаем посещенные узлы (в переенной _visitedNodesDfs_) и как только они выходят из dfs, мы их снова помечаем как непосещенные.  
+**Возможно сделано неоптимально! Исправить.**  
+```golang
+func hasCycle(graph map[int][]int) bool {
+	visitedNodes := make(map[int]bool)
+	for i, _ := range graph {
+		if visitedNodes[i] { continue }
+		visitedNodes[i] = true
+		visitedNodesDfs := make(map[int]bool)
+		if dfs(graph, i, visitedNodesDfs) {
+			return true
+		}
+	}
+	return false
+}
+
+func dfs(graph map[int][]int, node int, visitedNodes map[int]bool) bool {
+	if visitedNodes[node] {
+		return true
+	}
+	visitedNodes[node] = true
+	for _, v := range graph[node] {
+		if dfs(graph, v, visitedNodes) {
+			return true
+		}
+	}
+	visitedNodes[node] = false
+	return false
+}
+```
 [Использование обхода в глубину для поиска цикла](https://neerc.ifmo.ru/wiki/index.php?title=%D0%98%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_%D0%BE%D0%B1%D1%85%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%B3%D0%BB%D1%83%D0%B1%D0%B8%D0%BD%D1%83_%D0%B4%D0%BB%D1%8F_%D0%BF%D0%BE%D0%B8%D1%81%D0%BA%D0%B0_%D1%86%D0%B8%D0%BA%D0%BB%D0%B0)
