@@ -126,7 +126,78 @@ Sparse Table может быть реализована при помощи дв
 ![](images/pict5.png)  
 ![](images/pict6.png)  
 
-### todo: добавить код построения Sparse Table
+### Псевдокод
+```
+# кол-во элементов в массиве
+N = ...
+# P - сокращённо от power (степень). Наибольшее 2**P, которопе помещается в N
+P = ...
+# Для быстрого определния floor(log2(i)), 1 <= i <= N
+log2 = ... # size N+1, index 0 unused
+# Разреженная таблица будет содержать числовые значения
+dp = ... # P+1 строк и N колонок
+# Index Table (IT) связана с значениями в разреженной таблице.
+# Эта таблица полезна когда мы хотим поулчать в результате 
+# запроса индекс минимального (или максимального) элемента 
+# в интервале [l, r], а не само значение. 
+# Index table не несёт какого-то смысла в большинстве других 
+# запросах на интервалы таких как gcd или sum.
+it = ... # P+1 строк и N колонок
+
+function BuildMinSparseTable(values):
+    N = length(values)
+    P = floor(log(N) / log(2))
+    
+    log2 = [0,0,...,0,0] # size N+1
+    for (i = 0; i <= N; i++):
+        log2[i] = log2[i/2] + 1
+
+    # Заполняем первую строку
+    for (i = 0; i < N; i++):
+        dp[0][i] = values[i]
+        it[0][i] = i
+
+    for (p = 1; p <= P; p++):
+        for (i = 0; i + (1 << p) <= N; i++):
+            left = dp[p-1][i]
+            right = dp[p-1][i+(1<<(p-1))]
+            dp[p][i] = min(left, right)
+
+            # Save/propagate the index of smallest element
+            if left <= right:
+                if[p][i] = it[p-1][i]
+            else:
+                it[p][i] = it[p-1][i+(1<<(p-1))]
+
+# Запрос на получение самого маленького элемента в интервале [l, r], O(1)
+func MinQuery(l, r):
+    len = r - l + 1
+    p = log2[len]
+    left = dp[p][l]
+    right = dp[p][r - (1 << p) + 1]
+    return min(left, right)
+
+# Запрос на получение самого маленького элемента в интервале [l, r]
+# делая каскадный min запрос, O(logN)
+func CascadingMinQuery(l, r):
+    min_val = +INF
+    for (p = log2[r-l+1]; l <= r; p = log2[r-l+1]):
+        min_val = min(min_val, dp[p][l])
+        l += (1 << p)
+    return min_val
+
+# Возвращает индекс самого маленького элемента в диапазоне [l, r]
+# Если присуствует несколько самых маленьких значений, то вернётся 
+# индекс самого левого значения
+function MinIndexQuery(l, r):
+    len = r - l + 1
+    p = log2[len]
+    left = dp[p][l]
+    right = dp[p][r - (1 << p) + 1]
+    if left <= right:
+        return it[p][l]
+    return it[p][r - (1<<p) + 1]
+```
 
 ## Получение ответов на запросы  
 Предположим что мы уже построили нашу Sparse Table и сейчас мы готов обработать **Q** запросов.  
