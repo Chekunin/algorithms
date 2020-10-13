@@ -4,6 +4,106 @@ Lowest Common Ancestor (LCA)  двух узлов **a** и **b** в дереве
 ![](images/pict1.png)  
 _Также LCA(2,4) = 2, то есть это нормально что один из узлов будет являться LCA._  
 
+Самый простой и наивный алгоритм для нахождения наименьшего общего предка - вычислить глубину вершин **a** и **b** 
+по степенной подниматься из каждой вершины вверх по дереву, пока не будет найдена общая вершина:  
+```
+function LCA(a, b):
+    h1 = depth(a) # depth(x) = глубина вершины x
+    h2 = depth(b)
+    while (h1 != h2):
+        if (h1 > h2):
+            a = parent(a) # parent(x) = непосредственный предок вершины x
+            h1 -= 1
+        else:
+            b = parent(b)
+            h2 -= 1
+    while (a != b):
+        a = parent(a)
+        b = parent(b)
+    return a
+```
+Время работы этого алгоритма составляет **O(h)**, где h - высота дерева.  
+Одна если в дереве для каждой вершины предок не указан, то нам потребуется препроцессинг с **O(n)** time, который 
+найдёт для каждой вершины предка.  
+
+Если мы хотим обрабатывать много запросов на одно дерева, то лучше использовать алгоритм нахождение LCA при помощи 
+Eulerian path (он описан ниже).  
+
+### Задача с leetcode.com  
+На leetcode.com есть задача связанная с LCA: 
+[236. Lowest Common Ancestor of a Binary Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/)  
+Сигнатура метода, который надо реализовать:  
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q)
+```
+То есть нам на взод приходит корень дерева, и вершины p и q, LCA которых надо вернуть.  
+
+Варианты решений:  
+
+#### Рекурсивный способ  
+```java
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) return null;
+        if (root == p || root == q) return root;
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left != null && right != null) return root;
+        else if (left != null) return left;
+        else if (right != null) return right;
+        return null;
+    }
+}
+```
+Time complexity: O(n), где n - кол-во узлов
+Space complexity: O(h), где h - высота дерева
+
+#### Итеративный метод  
+```java
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        // ключ - узел, значение - его родительский узел
+        Map<TreeNode, TreeNode> parents = new HashMap<>();
+        Deque<TreeNode> deque = new ArrayDeque<>(); // для DFS
+        deque.addLast(root);
+        parents.put(root, null);
+        while (!parents.containsKey(p) || !parents.containsKey(q)) {
+            TreeNode node = deque.removeFirst();
+            if (node.left != null) {
+                parents.put(node.left, node);
+                deque.addLast(node.left);
+            }
+            if (node.right != null) {
+                parents.put(node.right, node);
+                deque.addLast(node.right);
+            }
+        }
+        Set<TreeNode> set = new HashSet<>();
+        while (p != null) {
+            set.add(p);
+            p = parents.get(p);
+        }
+        while (q != null) {
+            if (set.contains(q)) return q;
+            q = parents.get(q);
+        }
+        return null;
+    }
+}
+```
+Time complexity: O(n), где n - кол-во узлов  
+Space complexity: O(n)
+
+
 ## Нахождение LCA при помощи Eulerian path (Eulerian tour + RMQ)  
 Этот метод может отвечать на LCA запросы за **O(1)** time с **O(N*logN)** pre-processing time используя Sparse Table 
 для RMQ (Range Minimum query).  
