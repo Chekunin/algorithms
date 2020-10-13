@@ -119,3 +119,6 @@ public func replaceItem(at index: Int, withItem item: T) {
 }
 ```
 Замена элемента занимает **O(logN)** time complexity.  
+
+Конспект составлял по:
+* [Github \[raywenderlich\] Segment Tree](https://github.com/raywenderlich/swift-algorithm-club/tree/master/Segment%20Tree)

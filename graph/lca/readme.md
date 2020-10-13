@@ -101,3 +101,7 @@ function lca(index1, index2):
     i = sparse_table.queryIndex(l, r)
     return nodes[i]
 ```
+
+## Список источников  
+Конспект составлял по:
+* [Youtube \[WilliamFiset\] Lowest Common Ancestor (LCA) Problem | Eulerian path method](https://www.youtube.com/watch?v=sD1IoalFomA&list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P&index=13)
