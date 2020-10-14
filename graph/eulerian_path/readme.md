@@ -17,10 +17,10 @@
 ### Какие условия требуются для валидного Eulerian Path/Circuit  
 Этот зависит от того с каким типом графов мы работаем.  
 В целом существует 4 критерия для Eulerian Path/Circuit которые нам надо проверить:  
-####Undirected Graph  
+#### Undirected Graph  
 **Eulerian Circuit:** все вершины имеют чётную степень (чётное кол-во рёбер).  
 **Eulerian Path:** либо все вершины имеют чётную степень, либо только 2 вершины имеют нечётную степень.  
-####Directied Graph  
+#### Directied Graph  
 **Eulerian Circuit:** все вершины имеют одинаковое количество входных и выходных рёбер  
 **Eulerian Path:** не больше одной вершины имеют `(outdegree)-(indegree)=1` и не больше одной вершины имеют `(indegree)-
 (outdegree)=1` и все остальные вершины имею равное кол-во входящих и исходящих рёбер.  
@@ -81,6 +81,67 @@ in[i]-out[i] > 1`), мы можем утверждать, что Эйлеров 
 
 **Time complexity:** O(E), где e - кол-во рёбер. Мы делали 2 вычисления: подсчёт in/out степеней и DFS, 
 обе операции линейные.  
+
+## Псевдокод  
+```
+# Global/class scope variables
+n = number of vertices in the graph
+m = number of edges in the graph
+g = adjacency list representing directed graph
+
+in = [0,0,...,0,0] # length n
+out = [0,0,...,0,0] # length n
+
+path = empty integer linked list data structure
+
+function findEulerianPath():
+    countInOutDegrees()
+    if not graphHasEulerianPath(): return null
+
+    dfs(findStartNode())
+
+    # Return Eulerian path if we traversed all the edges.
+    # The graph might be disconnected, in which case it's 
+    # impossible to have an Eulerian path.
+    if path.size() == m+1: return path
+    return null
+
+function countInOutDegrees():
+    for edges in g:
+        for edge in edges:
+            out[edge.from]++
+            in[edge.to]++
+
+function graphHashEulerianPath():
+    start_nodes, end_nodes = 0, 0
+    for (i = 0; i < n; i++):
+        if (out[i] - in[i]) > 1 or (in[i] - out[i]) > 1:
+            return false
+        else if out[i] - in[i] == 1:
+            start_nodes++
+        else if in[i] - out[i] == 1:
+            end_nodes++
+    return (end_nodes == 0 and start_nodes == 0) or
+           (end_nodes == 1 and start_nodes == 1)
+
+function findStartNode():
+    start = 0
+    for (i = 0; i < n; i++):
+        # Unique starting node
+        if out[i] - in[i] == 1: return i
+        # Start at any node with an outgoing edge
+        if out[i] > 0: start = i
+    return start
+
+function dfs(at):
+    # While the current node still has outgoing edge
+    while (out[at] != 0):
+        # Select the next unvisited outgoing edge
+        next_edge = g[at].get(--out[at])
+        dfs(next_edge.to)
+    # Add current node to solution
+    path.insertFirst(at)
+```
 
 ## Список источников  
 Конспект составлял по:
