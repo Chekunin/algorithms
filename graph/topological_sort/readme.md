@@ -98,6 +98,44 @@ function dfs(i, at, V, ordering, graph):
     return i - 1
 ```
 
+## Kahn's Algorithm (алгоритм Кана)  
+Алгоритм Кана заключается в следующем: удалять вершины графа, у которых нет зависимостей (исходящих рёбер) и добавлять 
+их в начала массива с топологической последовательностью.  
+Мы повторяем эти действия до тех пор, пока все узлы не будут удалены или не будет найден цикл.  
+Чтобы выполнить этот алгоритм, нам надо сначала заполнить массив с кол-вом вершин, в котором мы будем указывать сколько 
+входящих рёбер у каждой вершины. Так мы сможем понимать какие узлы не имеют зависимостей (исходящих рёбер).  
+Также нам понадобится создать очередь `queue`, в которую мы будем класть узлы с 0 зависимостями. Оттуда же мы будем 
+доставать узлы.  
+
+### Pseudocode  
+```
+# 'g' is a directed acyclic graph represented as an adjacency list.
+function FindTopologicalOrdering(g):
+    n = g.size()
+    in_degree = [0,0,...,0] # size n
+    for (i = 0; i < n; i++):
+        for to in g[i]:
+            in_degree[to] += 1
+    
+    # 'q' always contains the set nodes with no incoming edges.
+    q = ... # empty nteger queue data structure
+    for (i = 0; i < n; i++):
+        if (in_degree[i] == 0):
+            q.enqueue(i)
+    index = 0
+    order = [0,0,...,0] # size n
+    while !q.isEmpty():
+        at = q.dequeue()
+        order[index++] = at
+        for to in g[at]:
+            in_degree[to] -= 1
+            if in_degree[to] == 0:
+                q.enqueue()
+    if index != n:
+        return null # Oops, graph contains a cycle
+    return order
+```
+
 ## Список источников  
 Конспект составлял по:
 * [Youtube \[WilliamFiset\] Topological Sort Algorithm | Graph Theory](https://www.youtube.com/watch?v=eL-KzMXSXXI&list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P&index=15)
