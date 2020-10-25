@@ -84,3 +84,9 @@ lowerBound и upperBound соответственно.
 - `TreeMap(SortedMap<K, ? extends V> smap)`: создает дерево, в которое добавляет все элементы из отображения map  
 - `TreeMap(Comparator<? super K> comparator)`: создает пустое дерево, где все добавляемые элементы впоследствии будут 
 отсортированы компаратором.  
+
+## Список источников  
+* [Класс TreeMap, его устройство и способ применения.](http://www.quizful.net/post/Java-TreeMap)  
+* [Интерфейсы SortedMap и NavigableMap. Класс TreeMap](https://metanit.com/java/tutorial/5.9.php)
+* [JavaRush | Особенности TreeMap](https://javarush.ru/groups/posts/2584-osobennosti-treemap)    
+* [Руководство по TreeMap в Java](https://www.codeflow.site/ru/article/java-treemap)  
