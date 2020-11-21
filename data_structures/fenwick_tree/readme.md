@@ -115,13 +115,13 @@ function add(i, x):
 function rangeQuery(i, j):
     return prefixSum(j) - prefixSum(i-1)
 
-# Make sure values is 1-based!
+# Make sure values is 1-based (meaning values[0] not used)!
 function construct(values):
     N = length(values)
     # Clone the values array since we're 
     # doing in place operations
     tree = deepCopy(values)
-    for i = 1,2,3,...,N:
+    for i = 1,2,3,...,N-1:
         j = i + LSB(i)
         if j < N:
             tree[j] += tree[i]
@@ -129,3 +129,12 @@ function construct(values):
 
 # LSB возвращает least significant bit значение. 
 ```
+
+## Список источников  
+Конспект составлял по:
+* [Youtube \[WilliamFiset\] Fenwick Tree/Binary indexed tree playlist](https://www.youtube.com/playlist?list=PLDV1Zeh2NRsCvoyP-bztk6uXAYoyZg_U9)
+
+### Норм статьи:  
+* [Habr | Дерево Фенвика](https://habr.com/ru/post/112828/)
+* [Habr | Дерево Фенвика для максимума](https://habr.com/ru/post/160099/)
+* [Университет ИТМО | Встречное дерево Фенвика](http://neerc.ifmo.ru/wiki/index.php?title=%D0%92%D1%81%D1%82%D1%80%D0%B5%D1%87%D0%BD%D0%BE%D0%B5_%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BE_%D0%A4%D0%B5%D0%BD%D0%B2%D0%B8%D0%BA%D0%B0)
