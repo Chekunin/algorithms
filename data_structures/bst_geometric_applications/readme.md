@@ -106,3 +106,9 @@ Sweep line алгоритм преобразует двухмерный поис
 
 ### Geometric applications of BSTs  
 ![](images/pict18.png)  
+
+## Список источников  
+Конспект составлял по:
+* [Сoursera | Geometric applications of BSTs](https://www.coursera.org/learn/algorithms-part1/lecture/ot9vw/)
+* [PDF Slides | Geometric applications of BSTs](cursera-abstract.pdf)
+* [PDF Slides | Interval Trees](interval_trees.pdf)
