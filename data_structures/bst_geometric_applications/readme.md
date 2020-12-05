@@ -216,3 +216,4 @@ Sweep line алгоритм преобразует двухмерный поис
 * [PDF Slides | Interval Trees](interval_trees.pdf)
 * [(норм) kd-Trees (CMSC 420)](https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/kdtrees.pdf)
 * [(чуть хуже) Find nearest neighbor using KD Tree](https://kanoki.org/2020/08/05/find-nearest-neighbor-using-kd-tree/)
+* [YouTube | K-D Tree: build and search for the nearest neighbor](https://www.youtube.com/watch?v=ivdmGcZo6U8)
