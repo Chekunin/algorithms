@@ -189,7 +189,18 @@ class Main {
 ```
 
 Поскольку здесь мы использовали классический алгоритм сортировки, то time complexity получилось __O(n*(logn)^2)__.  
-Мы можем использовать _**Radix Sort**_, чтобы уменьшить time complexity до __O(n*logn)__.  
+Мы можем использовать _**[Radix Sort](https://www.geeksforgeeks.org/radix-sort/)**_, чтобы уменьшить time complexity до 
+__O(n*logn)__.  
+
+Подробнее рекомендуется почитать эти источники:  
+- [Suffix arrays – a programming contest approach](https://web.stanford.edu/class/cs97si/suffix-array.pdf)
+- [Suffix Arrays (CMSC 423)](http://www.cbcb.umd.edu/confcour/Fall2012/lec14b.pdf)  
+
+Текущий раздел делал этой статье: [Suffix Array | Set 2 (nLogn Algorithm)](https://www.geeksforgeeks.org/suffix-array-s
+et-2-a-nlognlogn-algorithm/)
+
+Также существует способ построить Suffix array за O(n) time complexity: [Suffix Tree Application 4 – Build Linear Time 
+Suffix Array](https://www.geeksforgeeks.org/suffix-tree-application-4-build-linear-time-suffix-array/?ref=rp)
 
 ## The longest common prefix (LCP) array  
 LCP array - это массив, в котором каждый индекс указывает на значение, сколько общих первых символов имеют 2 
@@ -224,3 +235,12 @@ complexity?).
 
 Количество уникальных подстрок в строке можно посчитать при помощи следующей формулы:  
 ![](images/pict5.png)  
+
+## Список источников
+Конспект составлял по:
+* [Youtube \[WilliamFiset\] Suffix array playlist](https://www.youtube.com/playlist?list=PLDV1Zeh2NRsCQ_Educ7GCNs3mvzpXhHW5)
+* [Geeksforgeeks.org | Suffix Array | Set 1 (Introduction)](https://www.geeksforgeeks.org/suffix-array-set-1-introduction/?ref=lbp)
+* [Geeksforgeeks.org | Suffix Array | Set 2 (nLogn Algorithm)](https://www.geeksforgeeks.org/suffix-array-set-2-a-nlognlogn-algorithm/)
+
+Дополнительные источники:  
+* [Codeforces.com | Suffix Arrays](https://codeforces.com/blog/entry/4025?locale=ru)
