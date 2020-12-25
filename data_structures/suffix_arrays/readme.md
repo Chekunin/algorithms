@@ -249,8 +249,8 @@ void kasai(String str, int[] sa) {
     int k = 0;
     for (int i = 0; i < N; i++) {
         if (inv[i] > 0) {
-            int k = sa[inv[i] - 1];
-            while ((i + k < N) && (k + k < N) && T[i + k] == T[k + k]) k++;
+            int prevLen = sa[inv[i] - 1];
+            while ((i + k < N) && (prevLen + k < N) && T[i + k] == T[prevLen + k]) k++;
             lcp[inv[i] - 1] = k;
             if (len > 0) k--;
         }
