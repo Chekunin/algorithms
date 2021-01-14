@@ -139,7 +139,7 @@ class Main {
     public static class SumSegmentTree {
         int N; // кол-во элементов в исходном массиве
         long[] tree; // массив с деревом (heap)
-        public CompactSegmentTree(int[] arr) {
+        public SumSegmentTree(int[] arr) {
             this.N = arr.length;
 
             // build tree

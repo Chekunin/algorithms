@@ -66,7 +66,9 @@ vector<int> findLIS(vector<int> a):
    return answer
 ```
 **Time complexity: O(n^2)**  
-**Space complexity: O(n)**
+**Space complexity: O(n)**  
+
+Источник: [ИТМО | Задача о наибольшей возрастающей подпоследовательности](https://neerc.ifmo.ru/wiki/index.php?title=%D0%97%D0%B0%D0%B4%D0%B0%D1%87%D0%B0_%D0%BE_%D0%BD%D0%B0%D0%B8%D0%B1%D0%BE%D0%BB%D1%8C%D1%88%D0%B5%D0%B9_%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%D0%B0%D1%8E%D1%89%D0%B5%D0%B9_%D0%BF%D0%BE%D0%B4%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8)
 
 ## Решение за время O(n*logn)  
 Для более быстрого решения данной задачи построим следующую динамику: пусть `d[i](i=0...n)` - число, на которое 
@@ -101,9 +103,9 @@ _Свой комментарий:_
 ```
 vector<int> findLIS(vector<int> a):
    int n = a.size
-   int d[0..n]
-   int pos[0..n]
-   int prev[0..n - 1]
+   int d[0..n] // len=n+1
+   int pos[0..n] // len=n+1
+   int prev[0..n - 1] // len=n
    int length = 0
    
    pos[0] = -1
@@ -131,6 +133,9 @@ vector<int> findLIS(vector<int> a):
 
 **Time complexity: O(n\*logn)**  
 **Space complexity: O(n)**
+
+Источник: [ИТМО | Задача о наибольшей возрастающей подпоследовательности](https://neerc.ifmo.ru/wiki/index.php?title=%D0%97%D0%B0%D0%B4%D0%B0%D1%87%D0%B0_%D0%BE_%D0%BD%D0%B0%D0%B8%D0%B1%D0%BE%D0%BB%D1%8C%D1%88%D0%B5%D0%B9_%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%D0%B0%D1%8E%D1%89%D0%B5%D0%B9_%D0%BF%D0%BE%D0%B4%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8)  
+Наглядный разбор подобного алгоритма ещё можно найти [здесь](https://www.geeksforgeeks.org/longest-monotonically-increasing-subsequence-size-n-log-n/).  
 
 
 ## Patience sorting  
@@ -218,6 +223,173 @@ class Main {
 левее, на которую ссылается та карта. Так будем идти левее пока не дайдём до самой первой колод. Эти карты и будут 
 образовывать LIS.  
 
+## Count number of increasing subsequences  
+Нам дан массив чисел. Задача состоит в том, чтобы подсчитать все возможные подпоследовательности в массиве так, чтобы в 
+каждой подпоследовательности каждая цифра была больше, чем ее предыдущие цифры в подпоследовательности.  
+
+Пример:  
+```
+Input : arr[] = {1, 2, 3, 4}
+Output: 15
+There are total increasing subsequences
+{1}, {2}, {3}, {4}, {1,2}, {1,3}, {1,4}, 
+{2,3}, {2,4}, {3,4}, {1,2,3}, {1,2,4}, 
+{1,3,4}, {2,3,4}, {1,2,3,4}
+
+Input : arr[] = {4, 3, 6, 5}
+Output: 8
+Sub-sequences are {4}, {3}, {6}, {5}, 
+{4,6}, {4,5}, {3,6}, {3,5}
+```
+
+### Метод с dynamic programming O(n^2)  
+Для такой проблемы можно использовать решение, аналогичное решению подсчёту LIS через dynamic programming.  
+Мы сначала посчитаем кол-во возрастающих подпоследоватльностей, которые заканчиваются на каждом индексе исходного 
+массива. Затем просто вернём сумму результатов (в LIS проблеме мы бы вернули максимальный результат).
+
+**Пример:**
+```
+arr[] = {3, 2, 4, 5, 4}  
+subCount(0) = 1 // тк левее нулвого элемента нет элементов меньше его
+subCount(1) = 1 // тк левее первого элемента нет элементов меньше его
+subCount(2) = 1 + subCount(0) + subCount(1)  = 3 // тк левее третьего элемента элементы под номерами 0 и 1
+subCount(3) = 1 + subCount(0) + subCount(1) + subCount(2) 
+            = 1 + 1 + 1 + 3
+            = 6
+subCount(4) = 1 + subCount(0) + subCount(1)
+            = 1 + 1 + 1
+            = 3
+Result = subCount(0) + subCount(1) + subCount(2) + subCount(3)
+       = 1 + 1 + 3 + 6 + 3
+       = 14.
+```
+**Time Complexity: _O(n2)_**  
+**Auxiliary Space: _O(n)_**
+
+### Метод с Segment Tree O(n*logn)
+В одном из предыдущих методов использовалось следующее рекуррентное соотношение:  
+> dp[i] = 1 + summation(dp[j]), where i <jarr[i]  
+
+В таком подходе мы делали цикл по всеми массиву, внутри которого имели ещё цикл, котоырй итерировал по всем элементам 
+левее. В итоге мы имели O(n^2) time complexity.  
+В новом подходе мы избавимся от внутреннего цикла, сократив время с O(n) до O(logn) time.  
+Здесь мы создадим массив `dp`, в котором под индексом `i` будет кол-во подпоследовательностей, которые начинаются с 
+элемента `arr[i]` (в предыдущем алгоритме было кол-во элементов, которые заканчиваются на это число).  
+Мы будем перебирать массив справа налево.  
+Таким образом, мы сможем найти кол-во возрастающих подпоследовательностей начинающихся с индекса `i` за O(logn) time.  
+Когда мы будем считать кол-во возрастающих последовательностей начинающихся с индекса `i`, то нам надо просуммировать 
+все элементы `dp`, которые правее `i`, при условии, что их значение в `arr` больше `arr[i]`. Тк мы будем перебирать 
+массив справа налево, то у нас уже будут высчитаны `dp`-элементы правее. Мы могли быть при помощи Segment tree делать 
+запрос на сумму интервала (за O(logn) time), но нам нужна именно элементы больше текущего `arr[i]`. В таком случае 
+можно добавить маппинг элементов на их ранг (величину).  
+Мы создадим копию `arr_sorted` исходного массива `arr` (именно новую копию) и отсортируем его.  
+Затем создадим HashMap, в котором ключом будет значение `arr_sorted[i]`, а значением - его индекс `i`. То есть так мы 
+будем делать маппинг значения на его ранг.  
+В Segment tree мы будем класть в качестве ключа именно ранг элемента, а в качестве значения - кол-во возрастающих 
+подпоследовательностей.  
+Поэтому, чтобы узнать кол-во IS (increasing subsequence) начинающихся с индекса `i`, мы сделаем запрос в Segment tree 
+с интервалом [ранг_числа:]. Тк мы будем обрабатывать исходный массив справа налево, то норм что мы будем делать запрос 
+до конца в Segment tree, тк элементы левее в него ещё просто не успеют попасть.  
+Когда мы посчитаем результат `dp[i]`, то добавим его в Segment tree.  
+
+В результате ответом будет сумма всех значений `dp`.  
+
+#### Код алгоритма  
+```java
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+class Scratch {
+
+    // возвращает кол-во строго возрастающих подпоследовательностей
+    public static int countIS(int[] arr) {
+        int n = arr.length;
+
+        int[] sortedArr = Arrays.copyOf(arr, n);
+        Arrays.sort(sortedArr);
+
+        // ключ - значение элемента, значение - его ранг (его индекс в отсортированном массиве)
+        Map<Integer, Integer> valToRankMap = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            valToRankMap.put(sortedArr[i], i);
+        }
+
+        int[] dp = new int[n];
+
+        SumSegmentTree segmentTree = new SumSegmentTree(n);
+
+        // идём справа налево
+        for (int i = n-1; i >= 0; i--) {
+            int rank = valToRankMap.get(arr[i]); // ранг текущего элемента
+            dp[i] = 1 + segmentTree.query(rank+1, n);
+            // дополняем segment tree кол-вом IS, начинающихся с arr[i]
+            segmentTree.modify(rank, dp[i] + segmentTree.query(rank, rank+1));
+            // выше к dp[i] прибавляем segmentTree.query(rank, rank+1), чтобы
+            // правильно считать, когда в arr встречаются несколько раз
+            // одинаковые значения.
+        }
+
+        int res = 0;
+        for (int v : dp) res += v;
+        return res;
+    }
+
+    // Compact Sum Segment tree, которое рассматривалось в другом разделе
+    public static class SumSegmentTree {
+        int N; // кол-во элементов в исходном массиве
+        int[] tree; // массив с деревом (heap)
+        public SumSegmentTree(int n) {
+            this.N = n;
+            this.tree = new int[N * 2];
+        }
+
+        // комбинаторная функция
+        private int function(int i, int j) {
+            return i + j;
+        }
+
+        // изменяет значение конкретного элемента и все его родительские в том числе
+        public void modify(int idx, int val) {
+            tree[idx+N] = val;
+            for (int i = N + idx; i > 1; i >>= 1) {
+                tree[i>>1] = tree[i] + tree[i^1];
+            }
+        }
+
+        // делает запрос на интервал [left:right)
+        public int query(int left, int right) {
+            int res = 0;
+            for (left += N, right += N; left < right; left >>= 1, right >>= 1) {
+                if ((left & 1) != 0) res = function(res, tree[left++]);
+                if ((right & 1) != 0) res = function(res, tree[--right]);
+            }
+            return res;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] arr = new int[]{3, 2, 4, 5, 4};
+        // {3}, {3,4}, {3,4,5}, {3,5}, {3,4}
+        // {2}, {2,4}, {2,4,5}, {2,5}, {2,4}
+        // {4}, {4,5}
+        // {5}
+        // {4}
+        // result = 14 штук
+        // здесь некоторые подпоследовательности повторяются,
+        // это норм, тк мы считаем не кол-во уникальным IS,
+        // а просто сколько их всего. Некоторые элементы
+        // повторяются в исходном массиве, поэтому и есть дубли в ответах.
+        System.out.println(countIS(arr)); // 14
+
+        arr = new int[]{4, 4};
+        System.out.println(countIS(arr)); // 2
+    }
+}
+```
+**Time complexity: _O(n\*logn)_**  
+**Space complexity: _O(n)_**
+
 ## Список источников
 Конспект составлял по:
 * [ИТМО | Задача о наибольшей возрастающей подпоследовательности](https://neerc.ifmo.ru/wiki/index.php?title=%D0%97%D0%B0%D0%B4%D0%B0%D1%87%D0%B0_%D0%BE_%D0%BD%D0%B0%D0%B8%D0%B1%D0%BE%D0%BB%D1%8C%D1%88%D0%B5%D0%B9_%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%D0%B0%D1%8E%D1%89%D0%B5%D0%B9_%D0%BF%D0%BE%D0%B4%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8)
@@ -225,3 +397,7 @@ class Main {
 * [PDF | Longest increasing subsequence](https://www.cs.princeton.edu/courses/archive/spring13/cos423/lectures/LongestIncreasingSubsequence.pdf)
 * [Github | Patience sort java algorithm](https://github.com/bxt/Ludus/blob/master/unilectures/src/bxt/unilectures/algorithmenunddatenstrukturen/fun/sorting/PatienceSort.java)
 * [Числовая подпоследовательность](https://ru.wikiversity.org/wiki/%D0%A7%D0%B8%D1%81%D0%BB%D0%BE%D0%B2%D0%B0%D1%8F_%D0%BF%D0%BE%D0%B4%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C)
+* [Count number of increasing sub-sequences : O(NlogN)](https://www.geeksforgeeks.org/count-number-of-increasing-sub-sequences-onlogn/?ref=rp)
+* [Count all increasing subsequences](https://www.geeksforgeeks.org/count-all-increasing-subsequences/)
+* [Longest Increasing Subsequence | DP-3](https://www.geeksforgeeks.org/longest-increasing-subsequence-dp-3/)
+* [Longest Increasing Subsequence Size (N log N)](https://www.geeksforgeeks.org/longest-monotonically-increasing-subsequence-size-n-log-n/)
