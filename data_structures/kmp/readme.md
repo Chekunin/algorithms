@@ -183,7 +183,7 @@ vector<int> z_function(const string& s) {
 }
 ```
 
-TODO: дописать пример применения prefix-function и z-function.
+TODO: дописать пример применения z-function.
 
 Конспект составлял по:
 * [Префикс-функция. Алгоритм Кнута-Морриса-Пратта](https://brestprog.by/topics/prefixfunction/)  
