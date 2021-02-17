@@ -278,6 +278,8 @@ void processText(string t):
 * [codereview.stackexchange.com | Aho-Corasick for multiple exact string matching in Java](https://codereview.stackexchange.com/questions/115624/aho-corasick-for-multiple-exact-string-matching-in-java)  
 
 ### Ещё норм источники:  
+* [презентация | Aho-Corasick Automata](https://github.com/williamfiset/Algorithms/blob/master/references/AhoCorasick.pdf)
+* [stackoverflow | Steps of implementation of Aho-Corasick string matching algorithm](https://stackoverflow.com/a/46938655)
 * [proglib | Must-have алгоритмы для работы со строками на C++](https://proglib.io/p/must-have-algoritmy-dlya-raboty-so-strokami-na-c-2020-03-30)
 * [codeforces | Алгоритм Ахо-Корасик. Построение](https://codeforces.com/blog/entry/14854?locale=ru)
 * [algorithmica.org | Алгоритм Ахо-Корасик](https://algorithmica.org/ru/aho-corasick)
