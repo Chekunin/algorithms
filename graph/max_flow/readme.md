@@ -362,3 +362,98 @@ public class Dinics extends NetworkFlowSolverBase {
 ```
 
 </details>
+
+TODO: bipartite graph (Maximum Bipartite Matching).  
+
+## Find minimum s-t cut in a flow network
+У нас есть граф с источником `s` и потребителем `t`. Наша задача разделить вершины графа на два отдельных множества. 
+При этом отделить вершины убирая рёбра, общая ёмкость которых будет минимальной из возможных.  
+Такая ёмкость по какой-то там теореме будет равна максимальному потому (max-flow).  
+
+Во flow network _s-t cut_ - это разрез, который требует, чтобы источник `s` и сток `t` находились в разных 
+подмножествах, так же все вершины графа должны относиться к одному из множеств. Ёмкость s-t разреза определяется как 
+сумма ёмкостей рёбер, по которым был совершён разрез.  
+
+Проблемой, котору мы рассмотрим здесь, будет являться нахождение s-t разреза минимальной ёмкости.
+![](images/pict10.png)  
+В графе выше мы делали разрез по рёбрам 1-3, 4-3, 4-5.  
+Их общая ёмкость равна 12+7+4 = 23.  
+
+#### Minimum Cut and Maximum Flow  
+Аналогично проблеме Maximum Bipartite Matching, это ещё одна проблема, которую можно решить при помощи 
+Ford-Fulkerson Algorithm.  
+Это основано на max-flow min-cut теореме.  
+> **Max-flow min-cut теорема** гласит, что во flow network значение max-flow равно ёмкости minimum cut.  
+
+Получается, что из Ford-Fulkerson метода мы можем получить ёмкость минимального разреза. Но как нам получить рёбра, по 
+которым был сделан разрез?  
+Алгоритм следующий:  
+- Применяем уже знакомый нам алгоритм Ford-Fulkerson и дальше работаем с финальным residual graph (с тем, где уже нельзя 
+  пройти от источника к потребителю).  
+- Находим множество вершин, до которых можно дойти от источника в residual графе.  
+- Все рёбра, которые идут от достижимой от `s` вершины до недостижимых вершин - являются min-cut edges.  
+
+Так, например, после применения Edmonds-Karp алгоритма (где используем BFS), мы помечаем каждый раз список вершин, 
+которые уже посетили при данном проходе BFS. В итоге у нас есть множество с посещёнными вершинами. Это и будем список 
+вершин из первого множества (вершин, которые доступны от источника). Все остальные вершины будут относиться ко второму 
+множеству (множеству с потребителем `t`). Все рёбра, которые идут от первого множества ко второму - min-cut edges.  
+
+### Конспект данной главы составлял по:  
+* [GeeksForGeeks | Find minimum s-t cut in a flow network](https://www.geeksforgeeks.org/minimum-cut-in-a-directed-graph/)  
+
+# Bipartite Graph  
+Bipartite graph - это граф, чьи вершины могут быть разделены на две независимых группы **U** и **V** так, чтобы все 
+имеющиеся ребра соединяли вершины из разных групп (одно ребро не может соединять две вершины из одной группы).  
+Также можно дать другие определение: это двухцветный граф или граф, в котором нет циклов нечётной длины.  
+![](images/pict11.png)  
+
+Интересная вещь здесь - это **Maximum Cardinality Bipartite Matching** или **MCBM**.  
+Это когда мы нашли максимальное кол-во пар, которые составляют соединение вершин из обоих групп.  
+
+![](images/pict12.png)  
+
+Разберём суть MCBM на примере:  
+Допустим есть 5 человек и 5 книг. Каждый из людей хотел бы взять некоторые книги. Надо выдать людям которые они хотят 
+с максимальной эффективностью (чтобы максимальное кол-во людей получили книги). Кол-во книг ограничено (в данном случае 
+у каждой книги всего один экземпляр).  
+![](images/pict13.png)  
+
+Если мы будем использовать greedy matching (жадное соответствие), то можем получить такой результат:  
+Будем идти сверху вниз. Тогда первый человек попробует взять первую подходящую книгу, она свободна, берёт.  
+Второй человек попытается взять первую подхоядщую, она уже занята, поэтому пробует взять втору, она свободна - берёт.  
+
+В конечном итоге получим такой результат:
+![](images/pict14.png)  
+Как мы видим, один человек остался без книги.  
+Но можно ли сделать лучше?  
+
+Да! Мы можем преобразовать эту задачу из mathing problem в network flow problem путём добавления источника `s` и стока 
+`t`. Дальше мы сделаем каждое ребро направленным и зададим ёмкость 1 (при помощи изменения ёмоксти мы потом сможем 
+изменять кол-во экземпляров книг и кол-во книг, нужных одному человек).  
+![](images/pict15.png)  
+
+Теперь, когда мы преобразовали наш граф, мы можем применить один из max-flow алгоритмов.
+
+В конечном итоге мы можем получить такой результат:
+![](images/pict16.png)  
+
+### Check whether a given graph is Bipartite or no  
+Законспектировать по [этой статье](https://www.geeksforgeeks.org/bipartite-graph/)  
+
+### m Coloring Problem  
+Законспектировать по [этой статье](https://www.geeksforgeeks.org/m-coloring-problem-backtracking-5/)  
+
+
+TODO: законспектировать [это видео с задачей](https://www.youtube.com/watch?v=ar6x7dHfGHA&list=PLDV1Zeh2NRsDj3NzHbbFIC58etjZhiGcG&index=4&t=429s).  
+И законспектировать [это видео с задачей](https://www.youtube.com/watch?v=zrGnYstL4ss&list=PLDV1Zeh2NRsDj3NzHbbFIC58etjZhiGcG&index=5).  
+
+
+## Список источников
+Конспект составлял по:
+* [Youtube \[WilliamFiset\] Network Flow playlist](https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDj3NzHbbFIC58etjZhiGcG)
+* [Geeksforgeeks | Max Flow Problem Introduction](https://www.geeksforgeeks.org/max-flow-problem-introduction/)
+* [Medium | Solving the Maximum Flow Problem, with Ford Fulkerson Method](https://medium.com/@jithmisha/solving-the-maximum-flow-problem-with-ford-fulkerson-method-3fccc2883dc7)
+* [Youtube | Network Flows: Max-Flow Min-Cut Theorem (& Ford-Fulkerson Algorithm)](https://www.youtube.com/watch?v=oHy3ddI9X3o)
+* [PDF | Max Flow, Min Cut](https://www.cs.princeton.edu/courses/archive/spr04/cos226/lectures/maxflow.4up.pdf)
+* [cp-algorithms | Maximum flow - Ford-Fulkerson and Edmonds-Karp](https://cp-algorithms.com/graph/edmonds_karp.html#:~:text=Edmonds%2DKarp%20algorithm,-Edmonds%2DKarp%20algorithm&text=The%20algorithm%20was%20first%20published,time%2C%20even%20for%20irrational%20capacities.)
+* [PDF | Network Flow Problems](https://web.stanford.edu/class/cs97si/08-network-flow-problems.pdf)
